@@ -1,3 +1,7 @@
+# Sam Grant
+# May 2025
+# Tests for pyutils modules 
+
 # For safety:
 # Use the 'spawn' start method to ensure each worker process starts in a fresh Python interpreter.
 # This avoids inheriting state from the parent (as happens with 'fork'), which can cause subtle bugs
@@ -40,11 +44,11 @@ class Tester:
 
         # Test files
         self.local_file_path = "/exp/mu2e/data/users/mu2epro/ensembles/MDS3/MDS3a/merged_files_1/nts.mu2e.ensembleMDS3aMix1BB_CeMLeadingLog_1e-13_13629088.1_5.root"
-        self.remote_file_name = "nts.mu2e.ensembleMDS3aOnSpillTriggered.MDC2025-001.001430_00001419.root"
+        self.remote_file_name = "nts.mu2e.ensembleMDS2cMix1BBTriggered.MDC2020-000.001201_00000081.root"
         self.local_file_list = "tests/MDS_local.txt"
         self.bad_local_file_list = "tests/MDS_local_corrupted.txt"
         self.remote_file_list = "tests/MDS_remote.txt"
-        self.defname = "nts.mu2e.ensembleMDS3aOnSpillTriggered.MDC2025-001.root"
+        self.defname = "nts.mu2e.ensembleMDS2cMix1BBTriggered.MDC2020-000.001201_00000081.root"
         
         # Setup logger 
         self.logger = Logger(
@@ -110,7 +114,7 @@ class Tester:
 
     def _local_import_branch(self):
         importer = Importer(
-            file_name = self.remote_file_name,
+            file_name = self.local_file_path,
             branches = ["event"],
             use_remote=False,
             verbosity = self.verbosity
@@ -141,7 +145,7 @@ class Tester:
     
     def _remote_import_branch(self):
         importer = Importer(
-            file_name =,
+            file_name = self.local_file_path,
             branches = ["event"],
             use_remote=True,
             location="tape",
@@ -192,7 +196,7 @@ class Tester:
         if local_import_special_branch:
             self._safe_test("pyimport:Importer:import_branches (local, single file, special branches)", self._local_import_special_branch)     
             
-        if remote_import_branch:
+        if local_import_branch:
             self._safe_test("pyimport:Importer:import_branches (remote, single branch)", self._remote_import_branch)
             
         if local_import_grouped_branches:
@@ -281,6 +285,13 @@ class Tester:
             verbosity=self.verbosity
         )
         return processor.get_file_list(defname=self.defname)
+
+    # def _sam_get_file_list_TEST(self):
+    #     processor = Processor(
+    #         use_remote=False,
+    #         verbosity=self.verbosity
+    #     )
+    #     return processor.get_file_list(defname=self.defname)
 
     def _basic_multithread(self):
         processor = Processor(
@@ -576,3 +587,10 @@ class Tester:
         self.print_summary()
         
         return self.error_count == 0  # Return True if all tests passed
+
+# Usage (see run_tests.ipynb)
+# tester = Tester()
+# tester.run()  # Run all tests
+
+# Or run specific tests:
+# tester.run(test_reader=True, test_processor=False)

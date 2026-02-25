@@ -1299,7 +1299,37 @@ which should return
 
 Your changes will be automatically be applied to the `pyutils` installed in your environment, with no need to rerun the `pip` command, and you can import modules and classes using the same syntax as normal.
 
+
+
+## Testing
+
+The repository includes a lightweight, project-specific test runner rather than using the `pytest` framework.
+
+- `tests/pytest.py` contains a `Tester` class that implements a set of integration-style checks for core modules (`pyread`, `pyimport`, `pyprocess`, `pyselect`, `pyprint`, `pyplot`, `pyvector`, `pylogger`). The runner uses multiprocessing with the `spawn` start method to avoid fork-related issues.
+- `tests/run.py` is a CLI wrapper created from the notebook `tests/run.ipynb`. Use it to run selected test groups:
+
+```bash
+python3 tests/run.py --processor        # run Processor tests
+python3 tests/run.py --reader --importer
+python3 tests/run.py --all              # run all groups
+```
+
+Notes and caveats:
+- Many tests rely on Mu2e-specific data and tools (remote access via `mdh`, SAM definitions, and file lists). If you do not have access to the EAF or `mdh`, run only local test groups such as `--processor` (if local files are available) or individual unit checks.
+- Ensure you have the expected Mu2e environment active before running tests:
+
+```bash
+mu2einit
+pyenv ana
+```
+
+- Typical Python dependencies required by the tests: `uproot`, `awkward`, `numpy`, `matplotlib`, `scipy`. Install these in your environment or use the Mu2e-provided environment.
+- The test CLI exits with `0` when all selected tests pass and `2` when any test fails.
+- You can also run specific checks directly from Python:
+
+```bash
+python3 -c "from tests.pytest import Tester; t=Tester(); t.run(test_reader=True)"
+```
 ## Contact
 
 Reach out via Slack (#analysis-tools or #analysis-tools-devel) if you need help or would like to contribute.
-
