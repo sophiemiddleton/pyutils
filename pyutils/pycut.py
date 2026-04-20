@@ -333,21 +333,7 @@ class CutManager:
 
             # Calculate event-level efficiency
             # Handle both 1D (event-level) and multi-dimensional (track-level) masks
-            try:
-                # Try to get mask depth - if it's 1D (event-level), use directly
-                mask_depth = len(current_mask.layout.parameters.get('layout', {}).get('axis', []))
-                if mask_depth <= 1:
-                    # 1D event-level mask - use directly
-                    event_mask = current_mask
-                else:
-                    # Multi-dimensional mask - reduce to event level
-                    event_mask = ak.any(current_mask, axis=-1)
-            except:
-                # Fallback: try ak.any first, if it fails then it's already 1D
-                try:
-                    event_mask = ak.any(current_mask, axis=-1)
-                except:
-                    event_mask = current_mask
+            event_mask = ak.any(current_mask, axis=-1) if current_mask.ndim > 1 else current_mask
             
             events_passing = ak.sum(event_mask) # Count up these events
             absolute_frac = events_passing / total_events * 100
