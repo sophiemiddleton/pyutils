@@ -1179,7 +1179,7 @@ class CaloVisualization:
         try:
             # Use local caloDMAP_nominal.dat file
             module_dir = os.path.dirname(__file__)
-            map_file = os.path.join(module_dir, 'caloDMAP_nominal.dat')
+            map_file = os.path.join(module_dir, 'configs/caloDMAP_nominal.dat')
             
             if not os.path.exists(map_file):
                 self.logger.log(f"caloDMAP_nominal.dat not found at {map_file}", "error")
